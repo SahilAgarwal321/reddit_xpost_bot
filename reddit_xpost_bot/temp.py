@@ -50,35 +50,63 @@ def process_submissions(submissions):
 
 def process_submission(submission):
     '''Process individual submission instance'''
+    submission_type = get_submission_type(submission)
+    if submission_type == 'self':
+        process_self_submission(submission)
+    else:
+        process_link_submission(submission)
+
+
+def get_submission_type(submission):
+    '''Get submission type - self post or linked post'''
+    # return submission.type
+    # to do
+
+
+def process_self_submission(submission):
+    '''Process individual submission instance of type "self"'''
     normalized_title = submission.title.lower()
     for phrase in config.phrases:
+        # edit next line to include check for phrase in content of self post
         if phrase in normalized_title:
-            other_discussions = get_other_discussions(submission)
-            other_subreddits = get_other_subreddits(submission)
-            reply(submission, other_discussions, other_subreddits)
+            other_subreddits = get_other_subreddits_self_post(submission)
+            # get subreddit from title or content of self post
+            reply(submission, other_subreddits)
             # A reply has been made so do not attempt to match other phrases.
             break
 
 
+def get_other_subreddits_self_post(submission):
+    '''get links to other subreddits from title or content of self post'''
+    # return ['abc', 'def']
+    # to do
+
+
+def process_link_submission(submission):
+    '''Process individual submission instance of type "link"'''
+    other_discussions = get_other_discussions(submission)
+    other_subreddits = get_other_subreddits(submission)
+    reply(submission, other_subreddits, other_discussions)
+
+
 def get_other_discussions(submission):
     '''Get links to other discussions / submissions with same link posted'''
-    return ['abc', 'def']
+    # return ['abc', 'def']
     # to do
 
 
 def get_other_subreddits(submission):
     '''Get links to other subreddits with same link posted'''
-    return ['abc', 'def']
+    # return ['abc', 'def']
     # to do
 
 
-def reply(submission, discussions, subreddits):
-    '''Reply to suibmission with top level comment'''
+def reply(submission, subreddits, discussions=None):
+    '''Reply to submission with top level comment'''
     reply_text = config.reply_template.format(discussions, subreddits)
     print('Replying to: {}'.format(submission.title))
     submission.reply(reply_text)
     sleep(config.sleep_after_commenting)
-
 
 
 if __name__ == '__main__':
